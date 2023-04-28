@@ -1,0 +1,4 @@
+{:deps {simplemono.segment-upload/util {:local/root "../util"}
+        simplemono/world {:git/url "https://github.com/simplemono/world.git"
+                          :sha "4004fc3f51d6c2a8e2f4b9af08adb93ca25cf132"}
+        }}

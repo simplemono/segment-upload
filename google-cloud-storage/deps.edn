@@ -1,0 +1,3 @@
+{:deps {com.google.cloud/google-cloud-storage {:mvn/version "2.22.0"}
+        simplemono/world {:git/url "https://github.com/simplemono/world.git"
+                          :sha "4004fc3f51d6c2a8e2f4b9af08adb93ca25cf132"}}}

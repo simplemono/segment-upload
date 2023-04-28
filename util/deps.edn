@@ -1,0 +1,3 @@
+{:deps {ring/ring-core {:mvn/version "1.10.0"}
+        cheshire/cheshire {:mvn/version "5.11.0"}
+        com.google.guava/guava {:mvn/version "31.1-jre"}}}

@@ -1,0 +1,7 @@
+{:deps {simplemono.segment-upload/core {:local/root "../core"}
+        simplemono.segment-upload/google-cloud-storage {:local/root "../google-cloud-storage"}
+        simplemono.segment-upload/local {:local/root "../local"}
+        simplemono.segment-upload/upload-manager {:local/root "../upload-manager"}
+        simplemono.segment-upload/upload-manager-ui {:local/root "../upload-manager-ui"}
+        simplemono.segment-upload/util {:local/root "../util"}}
+ }
