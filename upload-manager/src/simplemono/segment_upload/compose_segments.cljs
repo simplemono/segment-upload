@@ -1,5 +1,5 @@
 (ns simplemono.segment-upload.compose-segments
-  (:require [app.segment-upload.upload-segments :as upload-segments]))
+  (:require [simplemono.segment-upload.upload-segments :as upload-segments]))
 
 (defn fetch
   [request]

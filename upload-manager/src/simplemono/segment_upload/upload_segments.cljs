@@ -1,6 +1,6 @@
 (ns simplemono.segment-upload.upload-segments
-  (:require [app.segment-upload.upload-segment :as upload-segment]
-            [app.segment-upload.util :as util]
+  (:require [simplemono.segment-upload.upload-segment :as upload-segment]
+            [simplemono.segment-upload.util :as util]
             ))
 
 (defn get-slice-ranges

@@ -1,6 +1,6 @@
 (ns simplemono.segment-upload.upload-manager
-  (:require [app.segment-upload.compose-segments :as compose-segments]
-            [app.segment-upload.util :as util]
+  (:require [simplemono.segment-upload.compose-segments :as compose-segments]
+            [simplemono.segment-upload.util :as util]
             ))
 
 (defn ensure-id
