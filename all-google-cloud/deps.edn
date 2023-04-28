@@ -3,5 +3,6 @@
         simplemono.segment-upload/local {:local/root "../local"}
         simplemono.segment-upload/upload-manager {:local/root "../upload-manager"}
         simplemono.segment-upload/upload-manager-ui {:local/root "../upload-manager-ui"}
+        simplemono.segment-upload/upload-manager-ui-devcard {:local/root "../upload-manager-ui-devcard"}
         simplemono.segment-upload/util {:local/root "../util"}}
  }

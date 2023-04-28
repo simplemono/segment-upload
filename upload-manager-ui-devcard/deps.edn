@@ -1,0 +1,7 @@
+{:deps {devcards/devcards {:mvn/version "0.2.7"
+                           :exclusions [cljsjs/react
+                                        cljsjs/react-dom]}
+        reagent/reagent {:mvn/version "1.1.0"
+                         :exclusions [cljsjs/react cljsjs/react-dom]}
+        simplemono.segment-upload/upload-manager {:local/root "../upload-manager"}
+        simplemono.segment-upload/upload-manager-ui {:local/root "../upload-manager-ui"}}}
