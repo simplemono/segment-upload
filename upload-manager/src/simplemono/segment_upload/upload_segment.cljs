@@ -71,7 +71,7 @@
   (do
     (def state
       (atom
-        {:segment-uuid (simplemono.segment-upload.util/random-uuid)
+        {:segment-uuid (random-uuid)
          :segment-blob (js/Blob. ["hello"]
                                  #js {:type "text/plain"}
                                  )
