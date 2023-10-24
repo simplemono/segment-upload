@@ -31,7 +31,7 @@
                  (let [[start end] slice-range
                        segment-size (- end start)]
                    {:index index
-                    :segment-uuid (random-uuid)
+                    :segment-uuid (str (random-uuid))
                     :progress 0
                     :size segment-size
                     :slice-range slice-range
