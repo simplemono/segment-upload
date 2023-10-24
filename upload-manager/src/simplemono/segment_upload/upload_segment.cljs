@@ -40,7 +40,8 @@
                 0
                 (a (fn [state]
                      (assoc state
-                            :error :offline)))
+                            :error :offline
+                            :error-date (js/Date.))))
                 200
                 (a (fn [state]
                      (assoc state
@@ -50,6 +51,7 @@
                 (a (fn [state]
                      (assoc state
                             :error :unknown
+                            :error-date (js/Date.)
                             :error-response {:status (.-status xhr)
                                              :body (.-responseText xhr)})))
                 ))))
