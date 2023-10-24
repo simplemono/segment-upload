@@ -69,7 +69,7 @@
   (do
     (def state
       (atom
-        {:segment-uuid (js/crypto.randomUUID)
+        {:segment-uuid (random-uuid)
          :segment-blob (js/Blob. ["hello"]
                                  #js {:type "text/plain"}
                                  )
