@@ -28,23 +28,32 @@
            (vec
              (map-indexed
                (fn [index slice-range]
-                 {:index index
-                  :segment-uuid (js/crypto.randomUUID)
-                  :progress 0
-                  :slice-range slice-range
-                  :segment-upload-url segment-upload-url})
+                 (let [[start end] slice-range
+                       segment-size (- end start)]
+                   {:index index
+                    :segment-uuid (js/crypto.randomUUID)
+                    :progress 0
+                    :size segment-size
+                    :slice-range slice-range
+                    :segment-upload-url segment-upload-url}))
                (get-slice-ranges slice-size
-                                 (.-size blob)))))
+                                 (.-size blob))))
+           :blob-size (.-size blob))
     w))
 
+(defn uploaded-bytes-count
+  [{:keys [segments]}]
+  (apply +
+         (map
+           (fn [segment]
+             (* (:progress segment)
+                (:size segment)))
+           segments)))
+
 (defn get-progress
-  [w]
-  (let [sum (apply +
-                   (map
-                     :progress
-                     (:segments w)))]
-    (/ sum
-       (count (:segments w)))))
+  [{:keys [blob-size] :as w}]
+  (/ (uploaded-bytes-count w)
+     blob-size))
 
 (defn get-pending-uploads
   [w]
@@ -92,9 +101,18 @@
 
 (defn update-progress
   [w]
-  (assoc w
-         :progress
-         (get-progress w)))
+  (update
+    w
+    :progress
+    (fn [progress]
+      ;; We noticed
+      ;; that [ProgressEvent](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequestUpload/progress_event)
+      ;; sometimes jumps back from 100% upload progress to something like 35%.
+      ;; We did not find out the reason to avoid that the progress glitches back
+      ;; to a way lower precentage `max` is being used here:
+      (max (or progress
+               0)
+           (get-progress w)))))
 
 (defn cleanup-slices
   "Free up memory of blob slices, where the segment already has been uploaded
