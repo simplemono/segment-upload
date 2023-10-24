@@ -64,10 +64,12 @@
     ))
 
 (comment
+  (require 'simplemono.segment-upload.util)
+
   (do
     (def state
       (atom
-        {:segment-uuid (js/crypto.randomUUID)
+        {:segment-uuid (simplemono.segment-upload.util/random-uuid)
          :segment-blob (js/Blob. ["hello"]
                                  #js {:type "text/plain"}
                                  )

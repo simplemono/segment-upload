@@ -29,7 +29,7 @@
              (map-indexed
                (fn [index slice-range]
                  {:index index
-                  :segment-uuid (js/crypto.randomUUID)
+                  :segment-uuid (util/random-uuid)
                   :progress 0
                   :slice-range slice-range
                   :segment-upload-url segment-upload-url})
