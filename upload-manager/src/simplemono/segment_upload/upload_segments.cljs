@@ -31,7 +31,7 @@
                  (let [[start end] slice-range
                        segment-size (- end start)]
                    {:index index
-                    :segment-uuid (js/crypto.randomUUID)
+                    :segment-uuid (random-uuid)
                     :progress 0
                     :size segment-size
                     :slice-range slice-range
