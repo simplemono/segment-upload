@@ -66,8 +66,6 @@
     ))
 
 (comment
-  (require 'simplemono.segment-upload.util)
-
   (do
     (def state
       (atom
