@@ -111,7 +111,7 @@
 
 (defn create
   [w]
-  (merge {:max-parallel-uploads 2
+  (merge {:max-parallel-uploads 8
           :drive! drive!}
          w))
 
