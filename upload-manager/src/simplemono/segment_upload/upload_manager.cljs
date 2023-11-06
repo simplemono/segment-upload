@@ -13,7 +13,10 @@
 
 (defn add-upload
   [w upload]
-  (let [upload* (-> upload
+  (let [upload* (-> w
+                    (select-keys [:slice-size
+                                  :max-parallel-uploads])
+                    (merge upload)
                     ensure-id
                     (assoc :added (js/Date.)))]
     (assoc-in w
