@@ -210,7 +210,7 @@
 (def defaults
   {:segment-upload-url "/segment-upload/upload/"
    :slice-size (* 1024 1024)
-   :max-parallel-uploads 2
+   :max-parallel-uploads 8
    :upload-segment! upload-segment/upload-segment!
    :drive! drive!})
 
