@@ -11,7 +11,7 @@
                                             uuid))]
       (assoc w
              :ring/response
-             (util/json-response {:url upload-url}))
+             (util/json-response {:url (str upload-url)}))
       )))
 
 (defn check-segment-count
