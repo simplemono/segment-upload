@@ -1,10 +1,9 @@
 (ns simplemono.segment-upload.core
-  (:require [ring.util.response :as response]
-            [simplemono.segment-upload.util :as util]
+  (:require [simplemono.segment-upload.util :as util]
             [simplemono.world.core :as w]
             ))
 
-(defn put-upload-ring-handler
+(defn get-upload-ring-handler
   [{:keys [ring/route-params segment-upload/get-upload-url] :as w}]
   (when-let [uuid (util/to-uuid (:uuid route-params))]
     (let [upload-url (get-upload-url (assoc w
@@ -12,8 +11,7 @@
                                             uuid))]
       (assoc w
              :ring/response
-             (response/redirect upload-url
-                                307))
+             (util/json-response {:url (str upload-url)}))
       )))
 
 (defn check-segment-count
@@ -72,77 +70,79 @@
   [w]
   (-> w
       (assoc-in [:ring/routes
-                 [:put "/segment-upload/upload/:uuid"]]
-                #'put-upload-ring-handler)
+                 [:get "/segment-upload/upload/:uuid"]]
+                #'get-upload-ring-handler)
       (assoc-in [:ring/routes
                  [:post "/segment-upload/compose"]]
                 #'compose-segments-ring-handler)))
 
 (comment
-  (require '[clj-http.client :as http]
-           '[clojure.string :as str])
+  (require '[clj-http.client :as http])
 
-  (def example-uuid
-    (java.util.UUID/randomUUID))
+  ;; Example of a basic upload client implementation:
 
-  (def example-request
-    {:request-method :put
-     :url (str "http://localhost:8080/segment-upload/upload/"
-               example-uuid)
-     :body "hello"})
+  (defn get-upload-url
+    "Gets a signed upload URL from the server."
+    [{:keys [base-url uuid]}]
+    (-> {:request-method :get
+         :url (str base-url
+                   "/segment-upload/upload/"
+                   uuid)
+         :as :json}
+        (http/request)
+        (get-in [:body :url])))
 
-  (let [location (get-in (http/request example-request)
-                         [:headers
-                          "Location"])]
-    (http/request
-      (assoc example-request
-             :url
-             (if (str/starts-with? location
-                                   "/")
-               (str "http://localhost:8080"
-                    location)
-               location))))
+  (get-upload-url
+    {:base-url "http://localhost:8080"
+     :uuid (random-uuid)})
 
   (defn upload-segment!
-    [{:keys [base-url uuid content]}]
-    (let [request {:request-method :put
-                   :url (str base-url
-                             "/segment-upload/upload/"
-                             uuid)
-                   :headers {"Content-Type" "text/plain"}
-                   :body content}
-          location (get-in (http/request request)
-                           [:headers
-                            "Location"])]
+    "Uploads the `:content` as segment."
+    [{:keys [uuid content] :as params}]
+    (let [upload-url (get-upload-url params)]
       (http/request
-        (assoc request
-               :url
-               (if (str/starts-with? location
-                                     "/")
-                 (str base-url
-                      location)
-                 location)))
+        {:request-method :put
+         :url upload-url
+         :headers {"Content-Type" "text/plain"}
+         :body content})
       {:uuid uuid}))
 
+  (def content
+    ;; Example content to upload:
+    "hello upload")
+
   (def example-uuids
-    (repeatedly 10
+    ;; UUIDs for the segments. Just for demonstration purposes we upload each
+    ;; letter as separate segment:
+    (repeatedly (count content)
                 (fn []
                   (java.util.UUID/randomUUID))))
 
-  (doseq [[n uuid] (map-indexed vector
-                                example-uuids)]
+  ;; Uploads all segments:
+  (doseq [[letter uuid] (map vector
+                             content
+                             example-uuids)]
     (upload-segment! {:base-url "http://localhost:8080"
                       :uuid uuid
-                      :content (str (inc n)
-                                    "\n")}))
+                      :content (str letter)}))
 
-  (http/request
-    {:request-method :post
-     :url "http://localhost:8080/segment-upload/compose"
-     :content-type :json
-     :form-params {:uuids example-uuids}
-     })
+  (def composed-url
+    ;; Composes all segments into a single file on the server that can be
+    ;; downloaded via the `composed-url`:
+    (-> {:request-method :post
+         :url "http://localhost:8080/segment-upload/compose"
+         :content-type :json
+         :form-params {:uuids example-uuids}
+         :as :json
+         }
+        (http/request)
+        (get-in [:body :url])))
 
-  ;; JS example:
-  ;; fetch('/segment-upload/upload/' + crypto.randomUUID(), {method: 'PUT', body: 'hello from js'})
+  ;; The composed file should have the uploaded `content`:
+  (= content
+     (-> composed-url
+         (http/get)
+         (:body))
+     )
+
   )
